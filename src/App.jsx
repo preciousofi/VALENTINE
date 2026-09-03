@@ -98,20 +98,27 @@ function App() {
     setScreen(nextScreen);
   };
 
-  const sendResponse = async (type, extra = {}) => {
+  const sendResponse = async (Response, extra = {}) => {
     try {
-      await fetch("/api/response", {
+      const result = await fetch("/api/response", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          type,
+          response,
           ...extra,
         }),
       });
+      const data = await result.json();
+      if (!result.ok) {
+        console.error("Email notification failed:", data);
+          return;
+      }
+
+      console.log("Email sent successfully:", data);
     } catch (error) {
-      console.log("Email notification failed:", error);
+      console.error("Email notification failed:", error);
     }
   };
 
@@ -129,8 +136,8 @@ function App() {
     setSelectedDate(option);
     goTo("confirmed");
 
-    sendResponse("DATE_CONFIRMED", {
-      dateType: option.title,
+    sendResponse("YES - DATE CONFIRMED", {
+      dateChoice: option.id,
     });
   };
 
