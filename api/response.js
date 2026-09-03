@@ -1,4 +1,3 @@
-```js
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -66,18 +65,15 @@ export default async function handler(req, res) {
 
     const { data, error } = await resend.emails.send({
       from: process.env.EMAIL_FROM,
-      to: [process.env.EMAIL_TO],
+      to: process.env.EMAIL_TO,
       subject: subject,
-
       html: `
         <!DOCTYPE html>
-
         <html>
           <head>
             <meta charset="UTF-8" />
             <title>MY HER ❤️</title>
           </head>
-
           <body
             style="
               margin: 0;
@@ -87,7 +83,6 @@ export default async function handler(req, res) {
               color: #ffffff;
             "
           >
-
             <div
               style="
                 max-width: 600px;
@@ -98,7 +93,6 @@ export default async function handler(req, res) {
                 text-align: center;
               "
             >
-
               <p
                 style="
                   font-size: 12px;
@@ -109,7 +103,6 @@ export default async function handler(req, res) {
               >
                 MY HER ❤️
               </p>
-
               <h1
                 style="
                   font-size: 34px;
@@ -119,7 +112,6 @@ export default async function handler(req, res) {
               >
                 ${title}
               </h1>
-
               <p
                 style="
                   font-size: 17px;
@@ -129,7 +121,6 @@ export default async function handler(req, res) {
               >
                 ${message}
               </p>
-
               ${
                 answer === "date"
                   ? `
@@ -141,7 +132,6 @@ export default async function handler(req, res) {
                         border-radius: 15px;
                       "
                     >
-
                       <p
                         style="
                           margin: 0 0 10px;
@@ -153,7 +143,6 @@ export default async function handler(req, res) {
                       >
                         HER CHOICE
                       </p>
-
                       <p
                         style="
                           margin: 0;
@@ -164,12 +153,10 @@ export default async function handler(req, res) {
                       >
                         ${chosenDate}
                       </p>
-
                     </div>
                   `
                   : ""
               }
-
               <p
                 style="
                   margin-top: 35px;
@@ -179,9 +166,7 @@ export default async function handler(req, res) {
               >
                 Response received from the MY HER Valentine's Day website.
               </p>
-
             </div>
-
           </body>
         </html>
       `,
@@ -189,15 +174,12 @@ export default async function handler(req, res) {
 
     if (error) {
       console.error("RESEND ERROR:", error);
-
       return res.status(500).json({
         success: false,
         message: "Email could not be sent.",
         error: error.message,
       });
     }
-
-    console.log("EMAIL SENT:", data);
 
     return res.status(200).json({
       success: true,
@@ -207,11 +189,9 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error("SERVER ERROR:", error);
-
     return res.status(500).json({
       success: false,
       message: error.message || "Internal server error.",
     });
   }
 }
-```

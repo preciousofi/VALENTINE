@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./App.css";
 
 const dateOptions = [
@@ -73,24 +73,21 @@ function App() {
   const [screen, setScreen] = useState("opening");
   const [selectedDate, setSelectedDate] = useState(null);
   const [audioStarted, setAudioStarted] = useState(false);
+  const audioRef = useRef(null);
 
   useEffect(() => {
     document.body.className = `screen-${screen}`;
   }, [screen]);
 
   const startAudio = () => {
-    if (audioStarted) return;
+    if (audioStarted || !audioRef.current) return;
 
-    const audio = document.getElementById("valentineMusic");
-
-    if (audio) {
-      audio
-        .play()
-        .then(() => setAudioStarted(true))
-        .catch(() => {
-          // Browser may block autoplay until another interaction.
-        });
-    }
+    audioRef.current
+      .play()
+      .then(() => setAudioStarted(true))
+      .catch((error) => {
+        console.log("Autoplay prevented:", error);
+      });
   };
 
   const goTo = (nextScreen) => {
@@ -110,8 +107,10 @@ function App() {
           ...extra,
         }),
       });
+      
+      if (!result.ok) throw new Error("Network response was not ok");
+      
       const data = await result.json();
-
       console.log("API response:", data);
     } catch (error) {
       console.error("Email notification failed:", error);
@@ -139,7 +138,7 @@ function App() {
 
   return (
     <main className="app">
-      <audio id="valentineMusic" loop>
+      <audio ref={audioRef} id="valentineMusic" loop>
         <source src="/music/heaven-baby.mp3" type="audio/mpeg" />
       </audio>
 
