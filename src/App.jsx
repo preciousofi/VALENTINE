@@ -98,7 +98,7 @@ function App() {
     setScreen(nextScreen);
   };
 
-  const sendResponse = async (Response, extra = {}) => {
+  const sendResponse = async (response, extra = {}) => {
     try {
       const result = await fetch("/api/response", {
         method: "POST",
