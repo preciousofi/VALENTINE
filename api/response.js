@@ -21,23 +21,24 @@ export default async function handler(req, res) {
 
     const responseDetails = {
       yes: {
-        subject: "❤️ MY HER — SHE SAID YES!",
+        subject: "MY HER — SHE SAID YES!",
         title: "SHE SAID YES!!! ❤️",
         message:
           "Mercy chose YES. She wants to go on a Valentine's Day date with you. ❤️",
       },
 
       no: {
-        subject: "💔 MY HER — SHE SAID NO",
+        subject: "MY HER — SHE SAID NO",
         title: "She said no. 💔",
         message:
           "Mercy chose NO. She doesn't want to go on a Valentine's Day date.",
       },
 
       date: {
-        subject: "💌 MY HER — VALENTINE'S DATE CONFIRMED!",
+        subject: "MY HER — VALENTINE'S DATE CONFIRMED!",
         title: "IT'S A DATE!!! ❤️",
-        message: "Mercy chose a Valentine's Day date.",
+        message:
+          "Mercy chose a Valentine's Day date.",
       },
     };
 
@@ -66,13 +67,11 @@ export default async function handler(req, res) {
       "https://api.resend.com/emails",
       {
         method: "POST",
-
         headers: {
-          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+          "Authorization": "Bearer " + process.env.RESEND_API_KEY,
           "Content-Type": "application/json",
           "User-Agent": "my-her-valentine/1.0",
         },
-
         body: JSON.stringify({
           from: process.env.EMAIL_FROM,
           to: [process.env.EMAIL_TO],
@@ -80,7 +79,6 @@ export default async function handler(req, res) {
 
           html: `
             <!DOCTYPE html>
-
             <html>
               <head>
                 <meta charset="UTF-8" />
@@ -96,7 +94,6 @@ export default async function handler(req, res) {
                   color: #ffffff;
                 "
               >
-
                 <div
                   style="
                     max-width: 600px;
@@ -107,7 +104,6 @@ export default async function handler(req, res) {
                     text-align: center;
                   "
                 >
-
                   <p
                     style="
                       font-size: 12px;
@@ -186,9 +182,7 @@ export default async function handler(req, res) {
                   >
                     Response received from the MY HER Valentine's Day website.
                   </p>
-
                 </div>
-
               </body>
             </html>
           `,
@@ -198,9 +192,10 @@ export default async function handler(req, res) {
 
     const data = await emailResponse.json();
 
-    if (!emailResponse.ok) {
-      console.error("Resend error:", data);
+    console.log("Resend status:", emailResponse.status);
+    console.log("Resend response:", data);
 
+    if (!emailResponse.ok) {
       return res.status(500).json({
         success: false,
         message: "Email could not be sent.",
