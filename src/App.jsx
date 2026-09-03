@@ -98,7 +98,7 @@ function App() {
     setScreen(nextScreen);
   };
 
-  const sendResponse = async (response, extra = {}) => {
+  const sendResponse = async (answer, extra = {}) => {
     try {
       const result = await fetch("/api/response", {
         method: "POST",
@@ -106,17 +106,13 @@ function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          response,
+          answer,
           ...extra,
         }),
       });
       const data = await result.json();
-      if (!result.ok) {
-        console.error("Email notification failed:", data);
-          return;
-      }
 
-      console.log("Email sent successfully:", data);
+      console.log("API response:", data);
     } catch (error) {
       console.error("Email notification failed:", error);
     }
@@ -124,19 +120,19 @@ function App() {
 
   const handleYes = () => {
     goTo("yes");
-    sendResponse("YES");
+    sendResponse("yes");
   };
 
   const handleNo = () => {
     goTo("no");
-    sendResponse("NO");
+    sendResponse("no");
   };
 
   const chooseDate = (option) => {
     setSelectedDate(option);
     goTo("confirmed");
 
-    sendResponse("YES - DATE CONFIRMED", {
+    sendResponse("date", {
       dateChoice: option.id,
     });
   };
