@@ -1,4 +1,3 @@
-```js
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({
@@ -16,76 +15,63 @@ export default async function handler(req, res) {
     }
 
     const dateNames = {
-      dinner: "🍽️ Dinner Date",
-      movie: "🎬 Movie Date",
-      beach: "🏖️ Beach & Picnic",
+      dinner: "Dinner Date",
+      movie: "Movie Date",
+      beach: "Beach & Picnic",
     };
 
     let subject = "";
     let message = "";
 
     if (response === "YES") {
-      subject = "❤️ Mercy Said YES to Valentine's Day!";
+      subject = "Mercy Said YES to Valentine's Day!";
 
       message = `
-        <h2>❤️ SHE SAID YES!</h2>
-
+        <h2>SHE SAID YES!</h2>
         <p>Mercy said <strong>YES</strong> to going on a Valentine's Day date with you.</p>
-
-        <p>Now go plan that date. 😭❤️</p>
+        <p>Now go plan that date. ❤️</p>
       `;
-    }
-
-    if (response === "NO") {
-      subject = "💔 Mercy's Valentine's Day Response";
+    } else if (response === "NO") {
+      subject = "Mercy's Valentine's Day Response";
 
       message = `
-        <h2>💔 Valentine's Day Response</h2>
-
+        <h2>Valentine's Day Response</h2>
         <p>Mercy selected <strong>NO</strong>.</p>
-
-        <p>She may still change her mind. 👀</p>
+        <p>She may still change her mind.</p>
       `;
-    }
-
-    if (response === "YES - DATE CONFIRMED") {
+    } else if (response === "YES - DATE CONFIRMED") {
       const selectedDate =
         dateNames[dateChoice] || "Unknown date option";
 
-      subject = "💌 Valentine's Date Confirmed!";
+      subject = "Valentine's Date Confirmed!";
 
       message = `
-        <h2>💌 IT'S A DATE!</h2>
-
+        <h2>IT'S A DATE!</h2>
         <p>Mercy said YES to Valentine's Day.</p>
-
         <p>
           <strong>Her date choice:</strong>
           ${selectedDate}
         </p>
-
         <p>Time to make it happen. ❤️</p>
       `;
+    } else {
+      return res.status(400).json({
+        error: "Invalid response",
+      });
     }
 
     const resendResponse = await fetch(
       "https://api.resend.com/emails",
       {
         method: "POST",
-
         headers: {
           "Content-Type": "application/json",
-
           Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
         },
-
         body: JSON.stringify({
           from: process.env.EMAIL_FROM,
-
           to: [process.env.EMAIL_TO],
-
           subject,
-
           html: message,
         }),
       }
@@ -98,6 +84,7 @@ export default async function handler(req, res) {
 
       return res.status(500).json({
         error: "Email could not be sent",
+        details: data,
       });
     }
 
@@ -113,4 +100,3 @@ export default async function handler(req, res) {
     });
   }
 }
-```
